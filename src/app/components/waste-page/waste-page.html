@@ -1,0 +1,81 @@
+<div class="container">
+  <div class="header">
+    <h1>Item Counter</h1>
+    <button
+      class="copy-btn"
+      (click)="copyResult()"
+      [class.success]="copySuccess()">
+      {{ copySuccess() ? '✓ Copied' : 'Copy Result' }}
+    </button>
+  </div>
+
+  <div *ngIf="items.length === 0" class="loading">
+    Loading items...
+  </div>
+
+  <div class="items-grid">
+    <div *ngFor="let displayItem of items; let i = index" class="item-card">
+      <div class="item-info">
+        <h3>{{ getDisplayName(displayItem.item) }}</h3>
+        <div class="count-display">
+          <div class="count-value">
+            {{ displayItem.count | number:'1.0-2' }}<span class="unit">{{ getUnitName(displayItem.item) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button
+          class="btn btn-minus"
+          (click)="decrementCount(i)"
+          title="Decrease">
+          −
+        </button>
+
+        <button
+          class="btn btn-expand"
+          (click)="toggleSteppers(i)"
+          [class.active]="displayItem.showSteppers">
+          ⋯
+        </button>
+
+        <button
+          class="btn btn-plus"
+          (click)="incrementCount(i)"
+          title="Increase">
+          +
+        </button>
+      </div>
+
+      <div *ngIf="displayItem.showSteppers" class="stepper-grid">
+        <button
+          *ngFor="let step of getStepperValues(displayItem.item)"
+          class="stepper-btn"
+          (click)="adjustCount(i, step)"
+          [class.negative]="step < 0">
+          {{ step > 0 ? '+' : '' }}{{ step }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Simple Results -->
+  <div *ngIf="groupedResults.length > 0" class="simple-results">
+    <h2>Items Selected</h2>
+    <div class="results-list">
+      <div *ngFor="let group of groupedResults" class="result-group">
+        <div class="group-header">{{ group.type }}</div>
+        <div class="group-items">
+          <div *ngFor="let item of group.items" class="result-item">
+            <span class="item-name">{{ item.name }}</span>
+            <span class="item-count">{{ item.count }}{{ item.unit }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="items.length > 0 && groupedResults.length === 0" class="no-items">
+    No items selected. Use + or - buttons to add items.
+  </div>
+</div>
